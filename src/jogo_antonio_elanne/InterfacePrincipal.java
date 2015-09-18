@@ -100,6 +100,7 @@ public class InterfacePrincipal extends JFrame {
 	}
 	
 	private JPanel getJContentPane(){
+		//teste
 		Icon pecaVazia = new ImageIcon(getClass().getResource("vazia.png"));
 		jContentPane = new JPanel();
 		jContentPane.setLayout(null);
