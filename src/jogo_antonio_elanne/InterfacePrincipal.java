@@ -3,6 +3,7 @@ package jogo_antonio_elanne;
 import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+
 import javax.swing.*;
 
 public class InterfacePrincipal extends JFrame implements ActionListener {
@@ -118,17 +119,21 @@ public class InterfacePrincipal extends JFrame implements ActionListener {
 			this.verificaVencedor();
 			tabuleiro.setTabuleiroComputador(this.comPoda ? ia
 					.getAIMoveWithPoda() : ia.getAIMove());
+			int cont = 0;
 			for (int i = 0; i <= 5; ++i) {
 				for (int j = 0; j <= 6; ++j) {
+					cont++;
 					System.out.print(tabuleiro.getTabuleiro()[i][j]);
 					if (tabuleiro.getTabuleiro()[i][j] == 1) {
 						mapaPosicao[(i)][(j)].setIcon(branca);
 						mapaPosicao[(i - 1)][(j)].setEnabled(true);
+						JOptionPane.showMessageDialog(null,"Número de iterações da IA nesta rodada: "+cont);
+						this.ia.mediaIteracoes+=cont;
+						this.ia.qntItera++;
 					}
 				}
 				System.out.println();
 			}
-
 			this.verificaVencedor();
 		}	
 	}
@@ -139,9 +144,11 @@ public class InterfacePrincipal extends JFrame implements ActionListener {
 		if (resultado == 2) {
 			JOptionPane.showMessageDialog(this, "Você venceu!");
 			jogoAndamento = false;
+			JOptionPane.showMessageDialog(this, "A média de iterações da IA foi: "+this.ia.mediaIteracoes/this.ia.qntItera+" iterações.");
 		} else if (resultado == 1) {
 			JOptionPane.showMessageDialog(this, "Computador venceu!");
 			jogoAndamento = false;
+			JOptionPane.showMessageDialog(this, "A média de iterações da IA foi: "+this.ia.mediaIteracoes/this.ia.qntItera+" iterações.");
 		}
 	}
 
