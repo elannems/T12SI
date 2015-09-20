@@ -32,7 +32,6 @@ public class Tabuleiro {
             }
         }
         return false;
-		//this.tabuleiro[linha][coluna] = 1;
 	}
 	
 	public boolean setTabuleiroComputador(int coluna) {

@@ -2,10 +2,14 @@ package jogo_antonio_elanne;
 
 import java.util.Scanner;
 
+import javax.swing.JOptionPane;
+
 public class IA {
 	private Tabuleiro b;
 	private int nextMoveLocation = -1;
 	private int maxDepth = 8;
+	int mediaIteracoes = 0;
+	int qntItera = 0;
 
 	public IA(Tabuleiro b) {
 		this.b = b;
