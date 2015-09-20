@@ -33,6 +33,7 @@ public class InterfacePrincipal extends JFrame implements ActionListener {
 	}
 
 	private void start() {
+		this.setContentPane(getJContentPane());
 		this.jogoAndamento = true;
 		this.tabuleiro = new Tabuleiro();
 		this.ia = new IA(tabuleiro);
@@ -129,7 +130,7 @@ public class InterfacePrincipal extends JFrame implements ActionListener {
 			}
 
 			this.verificaVencedor();
-		}
+		}	
 	}
 
 	private void verificaVencedor() {
@@ -167,6 +168,8 @@ public class InterfacePrincipal extends JFrame implements ActionListener {
 				}
 			}
 
+		}else if(!this.jogoAndamento){
+			JOptionPane.showMessageDialog(this, "Por favor, clique no menu Iniciar e escolha um dos itens para iniciar uma partida.","INICIAR JOGO", JOptionPane.INFORMATION_MESSAGE);
 		}
 	}
 
