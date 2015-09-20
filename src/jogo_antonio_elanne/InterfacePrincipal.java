@@ -12,6 +12,7 @@ public class InterfacePrincipal extends JFrame implements ActionListener {
 	JMenu menu = null;
 	JMenuBar menuBar = null;
 	JMenuItem menuItemIniciar = null;
+	JMenuItem menuItemPoda = null;
 	Icon preta, branca;
 	Tabuleiro tabuleiro;
 	boolean jogador1Vez, jogador2Vez;
@@ -21,18 +22,17 @@ public class InterfacePrincipal extends JFrame implements ActionListener {
 	Icon pecaVazia;
 	JButton posicao = null;
 	boolean jogoAndamento;
+	boolean comPoda;
 	IA ia;
 
 	public InterfacePrincipal() {
-		super();
-		start();
-	}
-
-	private void start() {
 		this.setSize(680, 600);
 		this.setLocationRelativeTo(null);
 		this.setContentPane(getJContentPane());
 		this.setTitle("Ligue 4 - Antonio Taha 12200988, Elanne Souza 10101180");
+	}
+
+	private void start() {
 		this.jogoAndamento = true;
 		this.tabuleiro = new Tabuleiro();
 		this.ia = new IA(tabuleiro);
@@ -75,16 +75,26 @@ public class InterfacePrincipal extends JFrame implements ActionListener {
 			menu = new JMenu();
 			menu.setText("Jogo");
 			menu.setBounds(new Rectangle(1, 0, 57, 21));
-			menu.add(getMenuIniciar());
+			menu.add(this.getMenuIniciar());
+			menu.add(this.getMenuMinMaxPoda());
 
 		}
 		return menu;
 	}
 
+	private JMenuItem getMenuMinMaxPoda() {
+		if (menuItemPoda == null) {
+			menuItemPoda = new JMenuItem();
+			menuItemPoda.setText("MiniMax com Poda");
+			menuItemPoda.addActionListener(this);
+		}
+		return menuItemPoda;
+	}
+
 	private JMenuItem getMenuIniciar() {
 		if (menuItemIniciar == null) {
 			menuItemIniciar = new JMenuItem();
-			menuItemIniciar.setText("Iniciar");
+			menuItemIniciar.setText("MiniMax");
 			menuItemIniciar.addActionListener(this);
 		}
 		return menuItemIniciar;
@@ -93,180 +103,69 @@ public class InterfacePrincipal extends JFrame implements ActionListener {
 	public void selecionaPosicao(int linha, int coluna) {
 		if (tabuleiro.getTabuleiro()[linha][coluna] == 0 && jogoAndamento) {
 			tabuleiro.setTabuleiroJogador(coluna);
-			for(int i=0; i<=5; ++i){
-				for(int j=0; j<=6; ++j){
+			for (int i = 0; i <= 5; ++i) {
+				for (int j = 0; j <= 6; ++j) {
 					System.out.print(tabuleiro.getTabuleiro()[i][j]);
-					if(tabuleiro.getTabuleiro()[i][j]==2){
+					if (tabuleiro.getTabuleiro()[i][j] == 2) {
 						mapaPosicao[(i)][(j)].setIcon(preta);
 						mapaPosicao[(i - 1)][(j)].setEnabled(true);
-					}}System.out.println();}
-			verificaVencedor(linha, coluna, 2);
-			tabuleiro.setTabuleiroComputador(ia.getAIMove());
-				for(int i=0; i<=5; ++i){
-					for(int j=0; j<=6; ++j){
-						System.out.print(tabuleiro.getTabuleiro()[i][j]);
-						if(tabuleiro.getTabuleiro()[i][j]==1){
-							mapaPosicao[(i)][(j)].setIcon(branca);
-							mapaPosicao[(i - 1)][(j)].setEnabled(true);
-						}
 					}
-					System.out.println();
 				}
+				System.out.println();
+			}
+			this.verificaVencedor();
+			tabuleiro.setTabuleiroComputador(this.comPoda ? ia
+					.getAIMoveWithPoda() : ia.getAIMove());
+			for (int i = 0; i <= 5; ++i) {
+				for (int j = 0; j <= 6; ++j) {
+					System.out.print(tabuleiro.getTabuleiro()[i][j]);
+					if (tabuleiro.getTabuleiro()[i][j] == 1) {
+						mapaPosicao[(i)][(j)].setIcon(branca);
+						mapaPosicao[(i - 1)][(j)].setEnabled(true);
+					}
+				}
+				System.out.println();
+			}
 
-				verificaVencedor(tabuleiro.getLinhaInserida(), coluna, 1);
+			this.verificaVencedor();
 		}
 	}
 
-	private void verificaVencedor(int linha, int coluna, int cor) {
+	private void verificaVencedor() {
 
-
-		verificaVertical(linha, coluna, cor);
-
-		verificaHorizontal(linha, coluna, cor);
-		
-		verificaDiagonalEsquerda(linha, coluna, cor);
-		
-		verificaDiagonalDireita(linha, coluna, cor);
-
-	}
-
-	private void verificaDiagonalDireita(int linha, int coluna, int cor) {
-		int cont = 1;
-		int tempC = coluna;
-		int tempL = linha;
-		boolean corIgual = true;
-		
-		//Diagonal Direita Superior
-		while (corIgual && tempL > 0 && tempC<5) {
-			tempL--;
-			tempC++;
-			if (tabuleiro.getTabuleiro()[tempL][tempC] == cor)
-				cont++;
-			else
-				corIgual = false;
-		}
-		
-		tempC = coluna;
-		tempL = linha;
-		corIgual = true;
-		
-		//Diagonal Esquerda Inferior
-		while (corIgual && tempL < 5 && tempC>0) {
-			tempL++;
-			tempC--;
-			if (tabuleiro.getTabuleiro()[tempL][tempC] == cor)
-				cont++;
-			else
-				corIgual = false;
-		}
-		verificaQuemVenceu(cont, cor);
-	}
-	private void verificaDiagonalEsquerda(int linha, int coluna, int cor) {
-		int cont = 1;
-		int tempC = coluna;
-		int tempL = linha;
-		boolean corIgual = true;
-		
-		//Diagonal Direita Inferior
-		while (corIgual && tempL < 5 && tempC<5) {
-			tempL++;
-			tempC++;
-			if (tabuleiro.getTabuleiro()[tempL][tempC] == cor)
-				cont++;
-			else
-				corIgual = false;
-		}
-		
-		tempC = coluna;
-		tempL = linha;
-		corIgual = true;
-		
-		//Diagonal Esquerda Superior
-		while (corIgual && tempL > 0 && tempC>0) {
-			tempL--;
-			tempC--;
-			if (tabuleiro.getTabuleiro()[tempL][tempC] == cor)
-				cont++;
-			else
-				corIgual = false;
-		}
-		verificaQuemVenceu(cont, cor);
-	}
-	
-
-
-	private void verificaHorizontal(int linha, int coluna, int cor) {
-		int cont = 1;
-		int temp = coluna;
-		boolean corIgual = true;
-
-		// verifica horizontal esquerda
-		while (corIgual && temp < 6) {
-			temp++;
-			if (tabuleiro.getTabuleiro()[linha][temp] == cor)
-				cont++;
-			else
-				corIgual = false;
-
-		}
-		temp = coluna;
-		corIgual = true;
-		
-		// verifica horizontal esquerda
-		while (corIgual && temp > 0) {
-			temp--;
-			if (tabuleiro.getTabuleiro()[linha][temp] == cor)
-				cont++;
-			else
-				corIgual = false;
-		}
-		verificaQuemVenceu(cont, cor);
-	}
-
-	private void verificaVertical(int linha, int coluna, int cor) {
-		boolean corIgual = true;
-		int temp = linha;
-		int cont = 1;
-		while (corIgual && temp < 5) {
-			temp++;
-			if (tabuleiro.getTabuleiro()[temp][coluna] == cor)
-				cont++;
-			else
-				corIgual = false;
-		}
-		verificaQuemVenceu(cont, cor);
-
-	}
-
-	private void verificaQuemVenceu(int cont, int cor) {
-		if (cont >= 4 && cor == 1) {
+		int resultado = this.ia.gameResult(this.tabuleiro);
+		if (resultado == 2) {
 			JOptionPane.showMessageDialog(this, "Você venceu!");
 			jogoAndamento = false;
-		} else if (cont >= 4 && cor == 2) {
+		} else if (resultado == 1) {
 			JOptionPane.showMessageDialog(this, "Computador venceu!");
 			jogoAndamento = false;
 		}
 	}
 
-	private void verificaVertical(boolean corIgual, int temp) {
-		// TODO Auto-generated method stub
-
-	}
-
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		if (e.getSource() == menuItemIniciar) {
+			this.comPoda = false;
 			this.start();
 			this.pack();
 			this.setSize(680, 600);
 
-		}
-		for (int i = 0; i < 6; i++) {
-			for (int j = 0; j < 7; j++) {
-				if (e.getSource() == mapaPosicao[i][j]) {
-					selecionaPosicao(i, j);
+		} else if (e.getSource() == menuItemPoda) {
+			this.comPoda = true;
+			this.start();
+			this.pack();
+			this.setSize(680, 600);
+
+		} else if (this.jogoAndamento) {
+			for (int i = 0; i < 6; i++) {
+				for (int j = 0; j < 7; j++) {
+					if (e.getSource() == mapaPosicao[i][j]) {
+						selecionaPosicao(i, j);
+					}
 				}
 			}
+
 		}
 	}
 
