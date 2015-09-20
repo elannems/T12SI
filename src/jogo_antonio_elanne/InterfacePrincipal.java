@@ -92,50 +92,33 @@ public class InterfacePrincipal extends JFrame implements ActionListener {
 
 	public void selecionaPosicao(int linha, int coluna) {
 		if (tabuleiro.getTabuleiro()[linha][coluna] == 0 && jogoAndamento) {
-			//if (jogador1Vez){
-				//mapaPosicao[(linha)][(coluna)].setIcon(preta);
-				tabuleiro.setTabuleiroJogador(coluna);
-				ia.gameResult(tabuleiro);
-				//verificaVencedor(linha, coluna);
-				//jogador1Vez = false;
-				//jogador2Vez = true;
-				tabuleiro.setTabuleiroComputador(ia.getAIMove());
-				ia.gameResult(tabuleiro);
-				//verificaVencedor(linha, coluna);
-				//System.out.println(ia.getAIMove(tabuleiro));
+			tabuleiro.setTabuleiroJogador(coluna);
+			for(int i=0; i<=5; ++i){
+				for(int j=0; j<=6; ++j){
+					System.out.print(tabuleiro.getTabuleiro()[i][j]);
+					if(tabuleiro.getTabuleiro()[i][j]==2){
+						mapaPosicao[(i)][(j)].setIcon(preta);
+						mapaPosicao[(i - 1)][(j)].setEnabled(true);
+					}}System.out.println();}
+			verificaVencedor(linha, coluna, 2);
+			tabuleiro.setTabuleiroComputador(ia.getAIMove());
 				for(int i=0; i<=5; ++i){
 					for(int j=0; j<=6; ++j){
 						System.out.print(tabuleiro.getTabuleiro()[i][j]);
 						if(tabuleiro.getTabuleiro()[i][j]==1){
-							mapaPosicao[(i)][(j)].setIcon(preta);
-							mapaPosicao[(i - 1)][(j)].setEnabled(true);
-						}else if(tabuleiro.getTabuleiro()[i][j]==2){
 							mapaPosicao[(i)][(j)].setIcon(branca);
 							mapaPosicao[(i - 1)][(j)].setEnabled(true);
 						}
 					}
 					System.out.println();
 				}
-			//}
-			/*else{
-				mapaPosicao[(linha)][(coluna)].setIcon(branca);
-				tabuleiro.setTabuleiroComputador(coluna);
-				jogador1Vez = true;
-				jogador2Vez = false;
-			}
-			if (linha != 0)
-				mapaPosicao[(linha - 1)][(coluna)].setEnabled(true);*/
 
-			verificaVencedor(linha, coluna);
+				verificaVencedor(tabuleiro.getLinhaInserida(), coluna, 1);
 		}
 	}
 
-	private void verificaVencedor(int linha, int coluna) {
-		int cor;
-		if (!jogador1Vez)
-			cor = 1;
-		else
-			cor = 2;
+	private void verificaVencedor(int linha, int coluna, int cor) {
+
 
 		verificaVertical(linha, coluna, cor);
 

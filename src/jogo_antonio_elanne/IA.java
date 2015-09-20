@@ -1,14 +1,77 @@
 package jogo_antonio_elanne;
 
-public class IA{
-	private Tabuleiro b;
-	private int nextMoveLocation=-1;
-	private int maxDepth = 8;
+import java.util.Scanner;
+
+public class IA { 
+    private Tabuleiro b;
+    private int nextMoveLocation=-1;
+    private int maxDepth = 8;
     
-	public IA(Tabuleiro tabuleiro){
-		this.b = tabuleiro;
-	}
-	
+    public IA(Tabuleiro b){
+        this.b = b;
+    }
+    
+    //Game Result
+    public int gameResult(Tabuleiro b){
+        int aiScore = 0, humanScore = 0;
+        for(int i=5;i>=0;--i){
+            for(int j=0;j<=6;++j){
+                if(b.getTabuleiro()[i][j]==0) continue;
+                
+                //Checking cells to the right
+                if(j<=3){
+                    for(int k=0;k<4;++k){ 
+                            if(b.getTabuleiro()[i][j+k]==1) aiScore++;
+                            else if(b.getTabuleiro()[i][j+k]==2) humanScore++;
+                            else break; 
+                    }
+                    if(aiScore==4)return 1; else if (humanScore==4)return 2;
+                    aiScore = 0; humanScore = 0;
+                } 
+                
+                //Checking cells up
+                if(i>=3){
+                    for(int k=0;k<4;++k){
+                            if(b.getTabuleiro()[i-k][j]==1) aiScore++;
+                            else if(b.getTabuleiro()[i-k][j]==2) humanScore++;
+                            else break;
+                    }
+                    if(aiScore==4)return 1; else if (humanScore==4)return 2;
+                    aiScore = 0; humanScore = 0;
+                } 
+                
+                //Checking diagonal up-right
+                if(j<=3 && i>= 3){
+                    for(int k=0;k<4;++k){
+                        if(b.getTabuleiro()[i-k][j+k]==1) aiScore++;
+                        else if(b.getTabuleiro()[i-k][j+k]==2) humanScore++;
+                        else break;
+                    }
+                    if(aiScore==4)return 1; else if (humanScore==4)return 2;
+                    aiScore = 0; humanScore = 0;
+                }
+                
+                //Checking diagonal up-left
+                if(j>=3 && i>=3){
+                    for(int k=0;k<4;++k){
+                        if(b.getTabuleiro()[i-k][j-k]==1) aiScore++;
+                        else if(b.getTabuleiro()[i-k][j-k]==2) humanScore++;
+                        else break;
+                    } 
+                    if(aiScore==4)return 1; else if (humanScore==4)return 2;
+                    aiScore = 0; humanScore = 0;
+                }  
+            }
+        }
+        
+        for(int j=0;j<7;++j){
+            //Game has not ended yet
+            if(b.getTabuleiro()[0][j]==0)return -1;
+        }
+        //Game draw!
+        return 0;
+    }
+    
     int calculateScore(int aiScore, int moreMoves){   
         int moveScore = 4 - moreMoves;
         if(aiScore==0)return 0;
@@ -140,67 +203,6 @@ public class IA{
         return score;
     } 
     
-  //Game Result
-    public int gameResult(Tabuleiro b){
-        int aiScore = 0, humanScore = 0;
-        for(int i=5;i>=0;--i){
-            for(int j=0;j<=6;++j){
-                if(b.getTabuleiro()[i][j]==0) continue;
-                
-                //Checking cells to the right
-                if(j<=3){
-                    for(int k=0;k<4;++k){ 
-                            if(b.getTabuleiro()[i][j+k]==1) aiScore++;
-                            else if(b.getTabuleiro()[i][j+k]==2) humanScore++;
-                            else break; 
-                    }
-                    if(aiScore==4)return 1; else if (humanScore==4)return 2;
-                    aiScore = 0; humanScore = 0;
-                } 
-                
-                //Checking cells up
-                if(i>=3){
-                    for(int k=0;k<4;++k){
-                            if(b.getTabuleiro()[i-k][j]==1) aiScore++;
-                            else if(b.getTabuleiro()[i-k][j]==2) humanScore++;
-                            else break;
-                    }
-                    if(aiScore==4)return 1; else if (humanScore==4)return 2;
-                    aiScore = 0; humanScore = 0;
-                } 
-                
-                //Checking diagonal up-right
-                if(j<=3 && i>= 3){
-                    for(int k=0;k<4;++k){
-                        if(b.getTabuleiro()[i-k][j+k]==1) aiScore++;
-                        else if(b.getTabuleiro()[i-k][j+k]==2) humanScore++;
-                        else break;
-                    }
-                    if(aiScore==4)return 1; else if (humanScore==4)return 2;
-                    aiScore = 0; humanScore = 0;
-                }
-                
-                //Checking diagonal up-left
-                if(j>=3 && i>=3){
-                    for(int k=0;k<4;++k){
-                        if(b.getTabuleiro()[i-k][j-k]==1) aiScore++;
-                        else if(b.getTabuleiro()[i-k][j-k]==2) humanScore++;
-                        else break;
-                    } 
-                    if(aiScore==4)return 1; else if (humanScore==4)return 2;
-                    aiScore = 0; humanScore = 0;
-                }  
-            }
-        }
-        
-        for(int j=0;j<7;++j){
-            //Game has not ended yet
-            if(b.getTabuleiro()[0][j]==0)return -1;
-        }
-        //Game draw!
-        return 0;
-    }
-    
     public int minimax(int depth, int turn){
         int gameResult = gameResult(b);
         if(gameResult==1)return Integer.MAX_VALUE;
@@ -236,4 +238,5 @@ public class IA{
         minimax(0, 1);
         return nextMoveLocation;
     }
- }
+    
+}

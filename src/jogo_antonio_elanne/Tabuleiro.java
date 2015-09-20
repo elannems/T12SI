@@ -2,7 +2,16 @@ package jogo_antonio_elanne;
 
 public class Tabuleiro {
 	int[][]tabuleiro;
+	int linhaInserida;
 	
+	public int getLinhaInserida() {
+		return linhaInserida;
+	}
+
+	public void setLinhaInserida(int linhaInserida) {
+		this.linhaInserida = linhaInserida;
+	}
+
 	public Tabuleiro(){
 		tabuleiro = new int[6][7];
 	}
@@ -18,7 +27,7 @@ public class Tabuleiro {
 	public boolean setTabuleiroJogador(int coluna) {
 		for(int i=5;i>=0;i--){
             if(tabuleiro[i][coluna] == 0) {
-            	tabuleiro[i][coluna] = 1;
+            	tabuleiro[i][coluna] = 2;
                 return true;
             }
         }
@@ -29,7 +38,8 @@ public class Tabuleiro {
 	public boolean setTabuleiroComputador(int coluna) {
 		for(int i=5;i>=0;i--){
             if(tabuleiro[i][coluna] == 0) {
-            	tabuleiro[i][coluna] = 2;
+            	tabuleiro[i][coluna] = 1;
+            	linhaInserida = i;
                 return true;
             }
         }
