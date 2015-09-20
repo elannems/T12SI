@@ -10,13 +10,41 @@ public class Tabuleiro {
 	public int[][] getTabuleiro() {
 		return tabuleiro;
 	}
+	
+    public boolean isLegalMove(int column){
+        return tabuleiro[0][column]==0;
+    }
 
-	public void setTabuleiroJogador(int linha, int coluna) {
-		this.tabuleiro[linha][coluna] = 1;
+	public boolean setTabuleiroJogador(int coluna) {
+		for(int i=5;i>=0;i--){
+            if(tabuleiro[i][coluna] == 0) {
+            	tabuleiro[i][coluna] = 1;
+                return true;
+            }
+        }
+        return false;
+		//this.tabuleiro[linha][coluna] = 1;
 	}
 	
-	public void setTabuleiroComputador(int linha, int coluna) {
-		this.tabuleiro[linha][coluna] = 2;
+	public boolean setTabuleiroComputador(int coluna) {
+		for(int i=5;i>=0;i--){
+            if(tabuleiro[i][coluna] == 0) {
+            	tabuleiro[i][coluna] = 2;
+                return true;
+            }
+        }
+        return false;
+		//this.tabuleiro[linha][coluna] = 2;
 	}
+	
+    public void undoMove(int column){
+        for(int i=0;i<=5;++i){
+            if(tabuleiro[i][column] != 0) {
+            	tabuleiro[i][column] = 0;
+                break;
+            }
+        }        
+    }
+  
 	
 }
