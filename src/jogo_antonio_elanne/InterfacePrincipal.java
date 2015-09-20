@@ -108,7 +108,8 @@ public class InterfacePrincipal extends JFrame implements ActionListener {
 					System.out.print(tabuleiro.getTabuleiro()[i][j]);
 					if (tabuleiro.getTabuleiro()[i][j] == 2) {
 						mapaPosicao[(i)][(j)].setIcon(preta);
-						mapaPosicao[(i - 1)][(j)].setEnabled(true);
+						if(i!=0)
+							mapaPosicao[(i - 1)][(j)].setEnabled(true);
 					}
 				}
 				System.out.println();
