@@ -347,7 +347,7 @@ public class IA {
 				continue;
 
 			if (turn == 1) {
-				b.setTabuleiroJogador(j);
+				b.setTabuleiroComputador(j);
 				currentScore = minimaxComPoda(depth + 1, 2, alpha, beta);
 
 				if (depth == 0) {
@@ -365,7 +365,7 @@ public class IA {
 
 				alpha = Math.max(currentScore, alpha);
 			} else if (turn == 2) {
-				b.setTabuleiroComputador(j);
+				b.setTabuleiroJogador(j);
 				currentScore = minimaxComPoda(depth + 1, 1, alpha, beta);
 				minScore = Math.min(currentScore, minScore);
 
@@ -387,7 +387,7 @@ public class IA {
 
 	public int getAIMoveWithPoda() {
 		nextMoveLocation = -1;
-		minimaxComPoda(0, 2, Integer.MIN_VALUE, Integer.MAX_VALUE);
+		minimaxComPoda(0, 1, Integer.MIN_VALUE, Integer.MAX_VALUE);
 		return nextMoveLocation;
 	}
 
