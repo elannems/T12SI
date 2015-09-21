@@ -20,7 +20,7 @@ public class Tabuleiro {
 		return tabuleiro;
 	}
 	
-    public boolean isLegalMove(int column){
+    public boolean movimentoLegal(int column){
         return tabuleiro[0][column]==0;
     }
 
@@ -43,10 +43,9 @@ public class Tabuleiro {
             }
         }
         return false;
-		//this.tabuleiro[linha][coluna] = 2;
 	}
 	
-    public void undoMove(int column){
+    public void desfazMovimento(int column){
         for(int i=0;i<=5;++i){
             if(tabuleiro[i][column] != 0) {
             	tabuleiro[i][column] = 0;

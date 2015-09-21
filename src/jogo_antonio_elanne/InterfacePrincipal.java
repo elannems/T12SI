@@ -107,32 +107,25 @@ public class InterfacePrincipal extends JFrame implements ActionListener {
 			tabuleiro.setTabuleiroJogador(coluna);
 			for (int i = 0; i <= 5; ++i) {
 				for (int j = 0; j <= 6; ++j) {
-					System.out.print(tabuleiro.getTabuleiro()[i][j]);
 					if (tabuleiro.getTabuleiro()[i][j] == 2) {
 						mapaPosicao[(i)][(j)].setIcon(preta);
 						if(i!=0)
 							mapaPosicao[(i - 1)][(j)].setEnabled(true);
 					}
 				}
-				System.out.println();
 			}
 			this.verificaVencedor();
 			tabuleiro.setTabuleiroComputador(this.comPoda ? ia
 					.getAIMoveWithPoda() : ia.getAIMove());
-			int cont = 0;
+			JOptionPane.showMessageDialog(null,"Número de iterações da IA nesta rodada: "+this.ia.qntItera);
+			this.ia.mediaIteracoes+=this.ia.qntItera;
 			for (int i = 0; i <= 5; ++i) {
 				for (int j = 0; j <= 6; ++j) {
-					cont++;
-					System.out.print(tabuleiro.getTabuleiro()[i][j]);
 					if (tabuleiro.getTabuleiro()[i][j] == 1) {
 						mapaPosicao[(i)][(j)].setIcon(branca);
 						mapaPosicao[(i - 1)][(j)].setEnabled(true);
-						JOptionPane.showMessageDialog(null,"Número de iterações da IA nesta rodada: "+cont);
-						this.ia.mediaIteracoes+=cont;
-						this.ia.qntItera++;
 					}
 				}
-				System.out.println();
 			}
 			this.verificaVencedor();
 		}	
@@ -140,15 +133,15 @@ public class InterfacePrincipal extends JFrame implements ActionListener {
 
 	private void verificaVencedor() {
 
-		int resultado = this.ia.gameResult(this.tabuleiro);
+		int resultado = this.ia.resultadoGame(this.tabuleiro);
 		if (resultado == 2) {
 			JOptionPane.showMessageDialog(this, "Você venceu!");
 			jogoAndamento = false;
-			JOptionPane.showMessageDialog(this, "A média de iterações da IA foi: "+this.ia.mediaIteracoes/this.ia.qntItera+" iterações.");
+			JOptionPane.showMessageDialog(this, "A média de iterações da IA foi: "+this.ia.mediaIteracoes/this.ia.chamaIA+" iterações.");
 		} else if (resultado == 1) {
 			JOptionPane.showMessageDialog(this, "Computador venceu!");
 			jogoAndamento = false;
-			JOptionPane.showMessageDialog(this, "A média de iterações da IA foi: "+this.ia.mediaIteracoes/this.ia.qntItera+" iterações.");
+			JOptionPane.showMessageDialog(this, "A média de iterações da IA foi: "+this.ia.mediaIteracoes/this.ia.chamaIA+" iterações.");
 		}
 	}
 

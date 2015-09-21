@@ -1,29 +1,30 @@
 package jogo_antonio_elanne;
 
-import java.util.Scanner;
-
-import javax.swing.JOptionPane;
-
+/*
+ * Adaptação do codigo disponivel em:
+ * MiniMax: http://www.codebytes.in/2014/12/connect-4-ai-java-using-minimax.html
+ * MiniMax com Podas: http://www.codebytes.in/2014/12/connect-4-minimax-with-alpha-beta.html
+ */
 public class IA {
 	private Tabuleiro b;
 	private int nextMoveLocation = -1;
 	private int maxDepth = 8;
 	int mediaIteracoes = 0;
 	int qntItera = 0;
+	int chamaIA = 0;
 
 	public IA(Tabuleiro b) {
 		this.b = b;
 	}
 
-	// Game Result
-	public int gameResult(Tabuleiro b) {
+	public int resultadoGame(Tabuleiro b) {
 		int aiScore = 0, humanScore = 0;
 		for (int i = 5; i >= 0; --i) {
 			for (int j = 0; j <= 6; ++j) {
 				if (b.getTabuleiro()[i][j] == 0)
 					continue;
 
-				// Checking cells to the right
+				// Verifica horizontal
 				if (j <= 3) {
 					for (int k = 0; k < 4; ++k) {
 						if (b.getTabuleiro()[i][j + k] == 1)
@@ -41,7 +42,7 @@ public class IA {
 					humanScore = 0;
 				}
 
-				// Checking cells up
+				// Verifica vertical
 				if (i >= 3) {
 					for (int k = 0; k < 4; ++k) {
 						if (b.getTabuleiro()[i - k][j] == 1)
@@ -59,7 +60,7 @@ public class IA {
 					humanScore = 0;
 				}
 
-				// Checking diagonal up-right
+				// Verifica diagonal direita superior
 				if (j <= 3 && i >= 3) {
 					for (int k = 0; k < 4; ++k) {
 						if (b.getTabuleiro()[i - k][j + k] == 1)
@@ -77,7 +78,7 @@ public class IA {
 					humanScore = 0;
 				}
 
-				// Checking diagonal up-left
+				// verifica diagonal esquerda superior
 				if (j >= 3 && i >= 3) {
 					for (int k = 0; k < 4; ++k) {
 						if (b.getTabuleiro()[i - k][j - k] == 1)
@@ -98,15 +99,15 @@ public class IA {
 		}
 
 		for (int j = 0; j < 7; ++j) {
-			// Game has not ended yet
+			// Se jogo nao terminou
 			if (b.getTabuleiro()[0][j] == 0)
 				return -1;
 		}
-		// Game draw!
+		//continua atualizando tabuleiro
 		return 0;
 	}
 
-	int calculateScore(int aiScore, int moreMoves) {
+	int calculaPontuacao(int aiScore, int moreMoves) {
 		int moveScore = 4 - moreMoves;
 		if (aiScore == 0)
 			return 0;
@@ -120,8 +121,7 @@ public class IA {
 			return 1000;
 	}
 
-	// Evaluate board favorableness for AI
-	public int evaluateBoard(Tabuleiro b) {
+	public int avaliaTabuleiro(Tabuleiro b) {
 
 		int aiScore = 1;
 		int score = 0;
@@ -158,7 +158,7 @@ public class IA {
 						}
 
 					if (moreMoves != 0)
-						score += calculateScore(aiScore, moreMoves);
+						score += calculaPontuacao(aiScore, moreMoves);
 					aiScore = 1;
 					blanks = 0;
 				}
@@ -184,7 +184,7 @@ public class IA {
 						}
 					}
 					if (moreMoves != 0)
-						score += calculateScore(aiScore, moreMoves);
+						score += calculaPontuacao(aiScore, moreMoves);
 					aiScore = 1;
 					blanks = 0;
 				}
@@ -213,7 +213,7 @@ public class IA {
 						}
 
 					if (moreMoves != 0)
-						score += calculateScore(aiScore, moreMoves);
+						score += calculaPontuacao(aiScore, moreMoves);
 					aiScore = 1;
 					blanks = 0;
 				}
@@ -243,7 +243,7 @@ public class IA {
 							}
 						}
 						if (moreMoves != 0)
-							score += calculateScore(aiScore, moreMoves);
+							score += calculaPontuacao(aiScore, moreMoves);
 						aiScore = 1;
 						blanks = 0;
 					}
@@ -274,7 +274,7 @@ public class IA {
 							}
 						}
 						if (moreMoves != 0)
-							score += calculateScore(aiScore, moreMoves);
+							score += calculaPontuacao(aiScore, moreMoves);
 						aiScore = 1;
 						blanks = 0;
 					}
@@ -285,29 +285,28 @@ public class IA {
 	}
 
 	public int minimax(int depth, int turn) {
-		int gameResult = gameResult(b);
-		if (gameResult == 1)
+		int resultadoGame = resultadoGame(b);
+		if (resultadoGame == 1)
 			return Integer.MAX_VALUE;
-		else if (gameResult == 2)
+		else if (resultadoGame == 2)
 			return Integer.MIN_VALUE;
-		else if (gameResult == 0)
+		else if (resultadoGame == 0)
 			return 0;
 
 		if (depth == maxDepth)
-			return evaluateBoard(b);
+			return avaliaTabuleiro(b);
 
 		int maxScore = Integer.MIN_VALUE, minScore = Integer.MAX_VALUE;
 		for (int j = 0; j <= 6; ++j) {
-			if (!b.isLegalMove(j))
+			if (!b.movimentoLegal(j))
 				continue;
 
 			if (turn == 1) {
 				b.setTabuleiroComputador(j);
 				int currentScore = minimax(depth + 1, 2);
 				maxScore = Math.max(currentScore, maxScore);
+				qntItera++;
 				if (depth == 0) {
-					System.out.println("Score for location " + j + " = "
-							+ currentScore);
 					if (maxScore == currentScore)
 						nextMoveLocation = j;
 				}
@@ -316,7 +315,7 @@ public class IA {
 				int currentScore = minimax(depth + 1, 1);
 				minScore = Math.min(currentScore, minScore);
 			}
-			b.undoMove(j);
+			b.desfazMovimento(j);
 		}
 		return turn == 1 ? maxScore : minScore;
 	}
@@ -329,17 +328,17 @@ public class IA {
 			else
 				return Integer.MIN_VALUE;
 		}
-		int gameResult = gameResult(b);
+		int resultadoGame = resultadoGame(b);
 
-		if (gameResult == 1)
+		if (resultadoGame == 1)
 			return Integer.MAX_VALUE / 2;
-		else if (gameResult == 2)
+		else if (resultadoGame == 2)
 			return Integer.MIN_VALUE / 2;
-		else if (gameResult == 0)
+		else if (resultadoGame == 0)
 			return 0;
 
 		if (depth == maxDepth)
-			return evaluateBoard(b);
+			return avaliaTabuleiro(b);
 
 		int maxScore = Integer.MIN_VALUE, minScore = Integer.MAX_VALUE;
 
@@ -347,20 +346,18 @@ public class IA {
 
 			int currentScore = 0;
 
-			if (!b.isLegalMove(j))
+			if (!b.movimentoLegal(j))
 				continue;
 
 			if (turn == 1) {
 				b.setTabuleiroComputador(j);
 				currentScore = minimaxComPoda(depth + 1, 2, alpha, beta);
-
+				qntItera++;
 				if (depth == 0) {
-					System.out.println("Score for location " + j + " = "
-							+ currentScore);
 					if (currentScore > maxScore)
 						nextMoveLocation = j;
 					if (currentScore == Integer.MAX_VALUE / 2) {
-						b.undoMove(j);
+						b.desfazMovimento(j);
 						break;
 					}
 				}
@@ -375,7 +372,7 @@ public class IA {
 
 				beta = Math.min(currentScore, beta);
 			}
-			b.undoMove(j);
+			b.desfazMovimento(j);
 			if (currentScore == Integer.MAX_VALUE
 					|| currentScore == Integer.MIN_VALUE)
 				break;
@@ -384,12 +381,16 @@ public class IA {
 	}
 
 	public int getAIMove() {
+		qntItera = 0;
+		chamaIA++;
 		nextMoveLocation = -1;
 		minimax(0, 1);
 		return nextMoveLocation;
 	}
 
 	public int getAIMoveWithPoda() {
+		qntItera = 0;
+		chamaIA++;
 		nextMoveLocation = -1;
 		minimaxComPoda(0, 1, Integer.MIN_VALUE, Integer.MAX_VALUE);
 		return nextMoveLocation;
